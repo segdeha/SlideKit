@@ -1,0 +1,45 @@
+/*	SlideKit styles
+	Andrew Hedges, andrew@hedges.name
+	2010-04-14 16:46
+*/
+
+.slidekit, .slidekit > li {
+	margin: 0;
+	padding: 0;
+}
+
+.slidekit {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	list-style: none;
+	font: 24px/1.5 Helvetica;
+}
+
+.slidekit > li {
+	position: absolute;
+	top: 2em;
+	right: 2em;
+	bottom: 2em;
+	left: 2em;
+}
+
+.slidekit > li.center {
+	text-align: center;
+}
+
+/* DEFAULT THEMES */
+
+.slidekit[data-theme=black] {
+	background: black;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(black), to(#333));
+	color: white;
+}
+
+.slidekit[data-theme=black] a {
+	color: #ccf;
+	text-decoration: none;
+}
+
