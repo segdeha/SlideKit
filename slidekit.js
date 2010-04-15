@@ -20,9 +20,17 @@
 	}
 	
 	const
+		EVENT_WEBKITTRANSITIONEND = 'webkitTransitionEnd',
+		EVENT_WEBKITANIMATIONEND  = 'webkitAnimationEnd',
+		
+		DATA_ONTRANSITIONEND = 'data-ontransitionend',
+		DATA_ONUNLOAD        = 'data-onunload',
+		
 		SELECTOR_SLIDES = '.slidekit > li',
-		HTML_FORM       = 'FORM',
-		UNDEF           = 'undefined'
+		
+		HTML_FORM = 'FORM',
+		
+		UNDEF = 'undefined'
 	;
 	
 	var
@@ -131,6 +139,89 @@
 		}
 		
 		map(remove, els);
+	}
+	
+	/**
+	 * Run some code before the transition starts (from data-onunload attr of 'current' slide)
+	 * @private
+	 * @param DOM element el
+	 * @return void
+	 */
+	function onUnload(el) {
+		var js;
+		js = el.getAttribute(DATA_ONUNLOAD);
+		eval(js);
+	}
+	
+	/**
+	 * Run some code when the transition ends (from data-ontransitionend attr of 'next' slide)
+	 * @private
+	 * @param DOM element el
+	 * @return void
+	 */
+	// box.addEventListener( 'webkitTransitionEnd', function( event ) { alert( "Finished transition!" ); }, false );
+	function onTransitionEnd(el) {
+		var js;
+		js = el.getAttribute(DATA_ONTRANSITIONEND);
+		eval(js);
+	}
+	
+	/**
+	 * Add event listeners to slides (and the window?)
+	 * @private
+	 * @return void
+	 */
+	function addEventListeners() {
+		var i, len;
+		
+		// watch for both events so we handle both simple transforms and keyframe animations
+		for (i = 0, len = slides.length; i < len; ++i) {
+			slides[i].ddEventListener(EVENT_WEBKITTRANSITIONEND, function (evt) {
+				onTransitionEnd(this);
+			}, false);
+			
+			slides[i].ddEventListener(EVENT_WEBKITANIMATIONEND, function (evt) {
+				onTransitionEnd(this);
+			}, false);
+		}
+		
+	}
+	
+	/**
+	 * Go to the next slide in the document order
+	 * @private
+	 * @return void
+	 */
+	function nextSlide() {
+		var idx;
+		
+		// magic happens ;)
+		
+		gotoSlide(idx);
+	}
+	
+	/**
+	 * Go to the previous slide in the document order
+	 * @private
+	 * @return void
+	 */
+	function prevSlide() {
+		var idx;
+		
+		// magic happens ;)
+		
+		gotoSlide(idx);
+	}
+	
+	/**
+	 * Go to an arbitrary slide in the deck
+	 * @private
+	 * @return void
+	 */
+	function gotoSlide(idx) {
+		
+		onUnload(slides[idx]);
+		
 	}
 	
 	/**

@@ -24,11 +24,32 @@
 	right: 2em;
 	bottom: 2em;
 	left: 2em;
+	display: none;
+}
+
+.slidekit > li.current {
+	display: block;
 }
 
 .slidekit > li.center {
 	text-align: center;
 }
+
+
+/* DEFAULT TRANSITIONS */
+
+.slidekit > li.dissolve {
+	
+}
+
+.slidekit > li.dissolve.in {
+	
+}
+
+.slidekit > li.dissolve.out {
+	
+}
+
 
 /* DEFAULT THEMES */
 
