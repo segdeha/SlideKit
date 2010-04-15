@@ -65,7 +65,7 @@
 	 * @private
 	 * @param  function                    func   Function
 	 * @param  object|string|number|array  items  Item or array of items to which to iterate over and apply the function
-	 * @return void
+	 * @return array
 	 */
 	function map(func, items) {
 		var idx, len;
@@ -166,25 +166,36 @@
 	/**
 	 * Run some code before the transition starts (from data-onunload attr of 'current' slide)
 	 * @private
-	 * @param DOM element el
+	 * @param object el DOM object
 	 * @return void
 	 */
 	function onUnload(el) {
-		var js;
-		js = el.getAttribute(DATA_ONUNLOAD);
-		eval(js);
+		doCallback(el, DATA_ONUNLOAD);
 	}
 	
 	/**
 	 * Run some code when the transition ends (from data-ontransitionend attr of 'next' slide)
 	 * @private
-	 * @param DOM element el
+	 * @param object el DOM object
 	 * @return void
 	 */
 	function onTransitionEnd(el) {
+		doCallback(el, DATA_ONTRANSITIONEND);
+	}
+	
+	/**
+	 * Run the code stuffed in the element's attribute
+	 * @private
+	 * @param object el DOM object
+	 * @param string attr Attribute name
+	 * @return void
+	 */
+	function doCallback(el, attr) {
 		var js;
-		js = el.getAttribute(DATA_ONTRANSITIONEND);
-		eval(js);
+		js = el.getAttribute(attr);
+		if (null !== js) {
+			eval(js);
+		}
 	}
 	
 	/**

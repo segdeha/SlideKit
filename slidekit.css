@@ -26,12 +26,12 @@
 */
 
 .slidekit, .slidekit > li {
+	position: absolute;
 	margin: 0;
 	padding: 0;
 }
 
 .slidekit {
-	position: absolute;
 	top: 0;
 	right: 0;
 	bottom: 0;
@@ -41,7 +41,6 @@
 }
 
 .slidekit > li {
-	position: absolute;
 	top: 2em;
 	right: 2em;
 	bottom: 2em;
