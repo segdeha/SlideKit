@@ -133,7 +133,7 @@
 	
 	/**
 	 * Initialize SlideKit
-	 * @public
+	 * @private
 	 * @return void
 	 */
 	function init() {
