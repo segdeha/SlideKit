@@ -26,7 +26,8 @@
 	;
 	
 	var
-		foo // placeholder until we have 'real' variables to put here
+		slides,
+		history
 	;
 	
 	/**
@@ -136,7 +137,8 @@
 	 * @return void
 	 */
 	function init() {
-		// do stuff :)
+		slides  = document.querySelectorAll(SELECTOR_SLIDES);
+		history = [];
 	}
 	
 	document.addEventListener('DOMContentLoaded', init, false);
