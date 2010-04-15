@@ -11,7 +11,7 @@
 });
 
 // keep our crap out of the global scope
-(function (window) {
+(function (window, document, undefined) {
 	
 	// bail if this ain't WebKit
 	if (navigator.userAgent.indexOf('WebKit') < 0) {
@@ -141,4 +141,4 @@
 	
 	document.addEventListener('DOMContentLoaded', init, false);
 	
-})(this, undefined);
+})(this, this.document);
