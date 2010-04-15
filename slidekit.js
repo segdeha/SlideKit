@@ -48,6 +48,8 @@
 		for (idx = 0, len = items.length; idx < len; ++idx) {
 			func(items[idx]);
 		}
+		
+		return items;
 	}
 	
 	/**
