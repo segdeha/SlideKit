@@ -36,7 +36,7 @@
 	 * @param  object|string|number|array  items  Item or array of items to which to iterate over and apply the function
 	 * @return void
 	 */
-	function apply(func, items) {
+	function map(func, items) {
 		var idx, len;
 		
 		// if this isn't an array, put it in one (form elements have a length property)
@@ -82,7 +82,7 @@
 	 * @return void
 	 */
 	function addClass(els, cls) {
-		apply(function (el) {
+		map(function (el) {
 			var classes;
 			
 			if (!hasClass(el, cls)) {
@@ -127,7 +127,7 @@
 			};
 		}
 		
-		apply(remove, els);
+		map(remove, els);
 	}
 	
 	/**
