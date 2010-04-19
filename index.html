@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -7,15 +7,29 @@
 	</head>
 	<body>
 		<ol class="slidekit" data-theme="black">
-			<li class="current center">
+			<li class="current center" data-onunload="myUnload(1)">
 				<h1>Welcome to SlideKit</h1>
 				<p><a href="http://github.com/segdeha/SlideKit">github.com/segdeha/SlideKit</a></p>
 			</li>
-			<li class="center">
+			<li class="center" data-onunload="myUnload(2)" data-ontransitionend="onTransEnd(2)" data-delay="500">
 				<h1>What is SlideKit?</h1>
 				<p>SlideKit is a framework for building presentations in HTML, CSS, and JavaScript. It leverages hardware-accelerated CSS animations to create smooth transitions between slides.</p>
 			</li>
+			<li>
+				<h1>A third slide</h1>
+				<p>Here for testing</p>
+			</li>
 		</ol>
-		<script type="text/javascript" src="slidekit.js"></script>
+		<script src="slidekit.js"></script>
+		<script>
+			// A couple of test functions
+			function myUnload(i) {
+				console.log("myUnload: " + i);
+			}
+			function onTransEnd(i) {
+				console.log("onTransEnd: " + i);
+			}
+
+		</script>
 	</body>
 </html>
