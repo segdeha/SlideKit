@@ -32,34 +32,35 @@
 	return this.replace(/^\s+|\s+$/, '');
 });
 
-// keep our crap out of the global scope
+// Keep our crap out of the global scope
 (function (window, document, undefined) {
-	
-	// bail if this ain't WebKit
+
+	// Bail if this ain't WebKit
 	if (navigator.userAgent.indexOf('WebKit') < 0) {
 		alert('SlideKit only works in WebKit browsers.');
 		return;
 	}
-	
+
 	const
 		EVENT_WEBKITTRANSITIONEND = 'webkitTransitionEnd',
 		EVENT_WEBKITANIMATIONEND  = 'webkitAnimationEnd',
-		
+
 		DATA_ONTRANSITIONEND = 'data-ontransitionend',
 		DATA_ONUNLOAD        = 'data-onunload',
-		
+
 		SELECTOR_SLIDES = '.slidekit > li',
-		
+		CURRENT_SLIDE   = '.slidekit > li.current',
+
 		HTML_FORM = 'FORM',
-		
+
 		UNDEF = 'undefined'
 	;
-	
+
 	var
 		slides,
 		history
 	;
-	
+
 	/**
 	 * Apply a function to an item or collection of items
 	 * @private
@@ -69,19 +70,19 @@
 	 */
 	function map(func, items) {
 		var idx, len;
-		
+
 		// if this isn't an array, put it in one (form elements have a length property)
 		if (UNDEF === typeof items.length || (UNDEF !== typeof items.tagName && HTML_FORM === items.tagName)) {
 			items = [items];
 		}
-		
+
 		for (idx = 0, len = items.length; idx < len; ++idx) {
 			func(items[idx]);
 		}
-		
+
 		return items;
 	}
-	
+
 	/**
 	 * Determine if the element has the classname
 	 * @private
@@ -90,23 +91,17 @@
 	 * @return  boolean
 	 */
 	function hasClass(el, cls) {
-		var classes, i, len;
-		
 		if (null === el) {
 			return false;
 		}
-		
-		classes = el.className.split(' ');
-		
-		for (i = 0, len = classes.length; i < len; ++i) {
-			if (cls === classes[i]) {
-				return true;
-			}
+
+		if (el.className.split(' ').indexOf(cls) === -1) {
+			return false
+		} else {
+			return true;
 		}
-		
-		return false;
 	}
-	
+
 	/**
 	 * Add a CSS class to any existing class names for an element or collection of elements
 	 * @private
@@ -117,7 +112,7 @@
 	function addClass(els, cls) {
 		map(function (el) {
 			var classes;
-			
+
 			if (!hasClass(el, cls)) {
 				el.className = el.className.trim();
 				classes      = '' === el.className ? [] : el.className.split(' ');
@@ -126,7 +121,7 @@
 			}
 		}, els);
 	}
-	
+
 	/**
 	 * Remove a CSS class from an element or collection of elements
 	 * @private
@@ -136,7 +131,7 @@
 	 */
 	function removeClass(els, cls) {
 		var remove;
-		
+
 		// optimize for the simple case
 		if (UNDEF === typeof cls) {
 			remove = function (el) {
@@ -146,23 +141,48 @@
 		else {
 			remove = function (el) {
 				var oldClasses, newClasses, i, len;
-				
+
 				oldClasses = el.className.trim().split(' ');
 				newClasses = [];
-				
+
 				for (i = 0, len = oldClasses.length; i < len; ++i) {
 					if (oldClasses[i] !== cls) {
 						newClasses.push(oldClasses[i]);
 					}
 				}
-				
+
 				el.className = newClasses.join(' ');
 			};
 		}
-		
+
 		map(remove, els);
 	}
-	
+
+	/**
+	 * Find the index of the current slide in the slidelist
+	 * Returns -1 when the item isn't found
+	 * Looks for the current slide by default
+	 * @private
+	 * @param object el The currently displayed slide
+	 * @return integer
+	 */
+	function slideIdx(el) {
+		var i, len;
+
+		if (UNDEF === typeof el) {
+			el = document.querySelector(CURRENT_SLIDE);
+		}
+
+		for (i = 0, len = slides.length; i < len; ++i) {
+			if (slides[i] === el) {
+				return i;
+			}
+		}
+
+		// Not found
+		return -1
+	}
+
 	/**
 	 * Run some code before the transition starts (from data-onunload attr of 'current' slide)
 	 * @private
@@ -172,7 +192,7 @@
 	function onUnload(el) {
 		doCallback(el, DATA_ONUNLOAD);
 	}
-	
+
 	/**
 	 * Run some code when the transition ends (from data-ontransitionend attr of 'next' slide)
 	 * @private
@@ -182,7 +202,7 @@
 	function onTransitionEnd(el) {
 		doCallback(el, DATA_ONTRANSITIONEND);
 	}
-	
+
 	/**
 	 * Run the code stuffed in the element's attribute
 	 * @private
@@ -197,7 +217,7 @@
 			eval(js);
 		}
 	}
-	
+
 	/**
 	 * Add event listeners to slides (and the window?)
 	 * @private
@@ -205,20 +225,32 @@
 	 */
 	function addEventListeners() {
 		var i, len;
-		
-		// watch for both events so we handle both simple transforms and keyframe animations
+
+		// Watch for both events so we handle both simple transforms and keyframe animations
 		for (i = 0, len = slides.length; i < len; ++i) {
-			slides[i].ddEventListener(EVENT_WEBKITTRANSITIONEND, function (evt) {
+			slides[i].addEventListener(EVENT_WEBKITTRANSITIONEND, function (evt) {
 				onTransitionEnd(this);
 			}, false);
-			
-			slides[i].ddEventListener(EVENT_WEBKITANIMATIONEND, function (evt) {
+
+			slides[i].addEventListener(EVENT_WEBKITANIMATIONEND, function (evt) {
 				onTransitionEnd(this);
 			}, false);
 		}
-		
+
+		// Listen for keys on the document
+		document.addEventListener('keyup', function (evt) {
+			switch(evt.keyCode) {
+				case 37: // Left Arrow
+					prevSlide();
+					break;
+				case 39: // Right Arrow
+					nextSlide();
+					break;
+			}
+		}, false);
+
 	}
-	
+
 	/**
 	 * Go to the next slide in the document order
 	 * @private
@@ -226,12 +258,18 @@
 	 */
 	function nextSlide() {
 		var idx;
-		
-		// magic happens ;)
-		
+
+		// Get the index of the current slide and increment up
+		idx = slideIdx() + 1;
+
+		// Dump out if we'd be going past the end
+		if (idx >= slides.length) {
+			return;
+		}
+
 		gotoSlide(idx);
 	}
-	
+
 	/**
 	 * Go to the previous slide in the document order
 	 * @private
@@ -239,23 +277,39 @@
 	 */
 	function prevSlide() {
 		var idx;
-		
-		// magic happens ;)
-		
+
+		// Get the index of the current slide and decrement
+		idx = slideIdx() - 1;
+
+		// Dump out if we'd be going past the first
+		if (idx < 0) {
+			return;
+		}
+
 		gotoSlide(idx);
 	}
-	
+
 	/**
 	 * Go to an arbitrary slide in the deck
 	 * @private
+	 * @param integer idx Index of the slide to go to
 	 * @return void
 	 */
 	function gotoSlide(idx) {
-		
-		onUnload(slides[idx]);
-		
+		var curEl, nextEl;
+
+		curEl  = document.querySelector(CURRENT_SLIDE);
+		nextEl = slides[idx];
+
+		// Run the callback
+		onUnload(curEl);
+
+		// Put it on the stack, and flip some classes
+		history.push(curEl);
+		removeClass(curEl, 'current');
+		addClass(nextEl, 'current');
 	}
-	
+
 	/**
 	 * Initialize SlideKit
 	 * @private
@@ -264,10 +318,10 @@
 	function init() {
 		slides  = document.querySelectorAll(SELECTOR_SLIDES);
 		history = [];
-		
+
 		addEventListeners();
 	}
-	
+
 	document.addEventListener('DOMContentLoaded', init, false);
-	
+
 })(this, this.document);
