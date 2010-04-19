@@ -45,8 +45,13 @@
 		EVENT_WEBKITTRANSITIONEND = 'webkitTransitionEnd',
 		EVENT_WEBKITANIMATIONEND  = 'webkitAnimationEnd',
 
+		DATA_TRANSITION      = 'data-transition',
+		DATA_DELAY           = 'data-delay',
+		DATA_TITLE           = 'data-title',
 		DATA_ONTRANSITIONEND = 'data-ontransitionend',
 		DATA_ONUNLOAD        = 'data-onunload',
+
+		DEFAULT_DELAY = 500,
 
 		SELECTOR_SLIDES = '.slidekit > li',
 		CURRENT_SLIDE   = '.slidekit > li.current',
@@ -224,10 +229,15 @@
 	 * @return void
 	 */
 	function addEventListeners() {
-		var i, len;
+		var i, len, delay;
 
 		// Watch for both events so we handle both simple transforms and keyframe animations
 		for (i = 0, len = slides.length; i < len; ++i) {
+			// Set up animation delays
+			delay = slides[i].getAttribute(DATA_DELAY) || DEFAULT_DELAY;
+			slides[i].style.webkitTransitionDuration = delay + "ms";
+
+			// Bind the events
 			slides[i].addEventListener(EVENT_WEBKITTRANSITIONEND, function (evt) {
 				onTransitionEnd(this);
 			}, false);
@@ -297,12 +307,36 @@
 	 * @return void
 	 */
 	function transSlide(prevEl, nextEl) {
-		// Run the prev callback
-		onUnload(prevEl)
+		var prevDelay, nextDelay;
 
-		// Flip classes
-		removeClass(prevEl, 'current');
-		addClass(nextEl, 'current');
+		prevDelay = parseInt(prevEl.getAttribute(DATA_DELAY)) || DEFAULT_DELAY;
+		nextDelay = parseInt(nextEl.getAttribute(DATA_DELAY)) || DEFAULT_DELAY;
+		console.log("prevDelay: " + prevDelay);
+		console.log("typeof prevDelay: " + typeof prevDelay);
+		console.log("nextDelay: " + nextDelay);
+		console.log("typeof nextDelay: " + typeof nextDelay);
+
+		// Run the prev callback
+		onUnload(prevEl);
+
+		// Transition: Start
+		console.log("Trans: Start");
+		addClass(prevEl, 'out');
+
+		// Transition: Midpoint
+		setTimeout(function() {
+			console.log("Trans: Mid");
+			removeClass(prevEl, 'out');
+			removeClass(prevEl, 'current');
+			addClass(nextEl, 'current');
+			addClass(nextEl, 'in');
+		}, prevDelay);
+
+		// Transition: End
+		setTimeout(function() {
+			console.log("Trans: End");
+			removeClass(nextEl, 'in');
+		}, prevDelay + nextDelay);
 
 		// Run the next callback
 		onTransitionEnd(nextEl);
