@@ -290,6 +290,25 @@
 	}
 
 	/**
+	 * Transition from slide to slide
+	 * @private
+	 * @param object prevEl  The previous slide
+	 * @param object nextEl  The next slide
+	 * @return void
+	 */
+	function transSlide(prevEl, nextEl) {
+		// Run the prev callback
+		onUnload(prevEl)
+
+		// Flip classes
+		removeClass(prevEl, 'current');
+		addClass(nextEl, 'current');
+
+		// Run the next callback
+		onTransitionEnd(nextEl);
+	}
+
+	/**
 	 * Go to an arbitrary slide in the deck
 	 * @private
 	 * @param integer idx Index of the slide to go to
@@ -301,13 +320,26 @@
 		curEl  = document.querySelector(CURRENT_SLIDE);
 		nextEl = slides[idx];
 
-		// Run the callback
-		onUnload(curEl);
+		// Swap slides
+		transSlide(curEl, nextEl);
 
-		// Put it on the stack, and flip some classes
+		// Put it on the history stack
 		history.push(curEl);
-		removeClass(curEl, 'current');
-		addClass(nextEl, 'current');
+	}
+
+	/**
+	 * Go back in the history
+	 * @private
+	 * @return void
+	 */
+	function goHistBack() {
+		var curEl, nextEl;
+
+		curEl  = document.querySelector(CURRENT_SLIDE);
+		nextEl = history.pop();
+
+		// Swap slides
+		transSlide(curEl, nextEl);
 	}
 
 	/**
@@ -322,6 +354,7 @@
 		addEventListeners();
 	}
 
+	// Load it up!
 	document.addEventListener('DOMContentLoaded', init, false);
 
 })(this, this.document);
