@@ -64,12 +64,23 @@
 }
 
 .slidekit > li.dissolve.in {
-	
+	-webkit-animation-name: fadein;
 }
 
 .slidekit > li.dissolve.out {
-	
+	-webkit-animation-name: fadeout;
 }
+
+@-webkit-keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@-webkit-keyframes fadeout {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
 
 
 /* DEFAULT THEMES */
