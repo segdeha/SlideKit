@@ -309,6 +309,7 @@
 	function transSlide(prevEl, nextEl) {
 		var prevDelay, nextDelay;
 
+		// Had to parseInt -- for some reason, the second *always* came back string
 		prevDelay = parseInt(prevEl.getAttribute(DATA_DELAY)) || DEFAULT_DELAY;
 		nextDelay = parseInt(nextEl.getAttribute(DATA_DELAY)) || DEFAULT_DELAY;
 
