@@ -311,21 +311,15 @@
 
 		prevDelay = parseInt(prevEl.getAttribute(DATA_DELAY)) || DEFAULT_DELAY;
 		nextDelay = parseInt(nextEl.getAttribute(DATA_DELAY)) || DEFAULT_DELAY;
-		console.log("prevDelay: " + prevDelay);
-		console.log("typeof prevDelay: " + typeof prevDelay);
-		console.log("nextDelay: " + nextDelay);
-		console.log("typeof nextDelay: " + typeof nextDelay);
 
 		// Run the prev callback
 		onUnload(prevEl);
 
 		// Transition: Start
-		console.log("Trans: Start");
 		addClass(prevEl, 'out');
 
 		// Transition: Midpoint
 		setTimeout(function() {
-			console.log("Trans: Mid");
 			removeClass(prevEl, 'out');
 			removeClass(prevEl, 'current');
 			addClass(nextEl, 'current');
@@ -334,7 +328,6 @@
 
 		// Transition: End
 		setTimeout(function() {
-			console.log("Trans: End");
 			removeClass(nextEl, 'in');
 		}, prevDelay + nextDelay);
 
