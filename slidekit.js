@@ -51,7 +51,8 @@
 		DATA_ONTRANSITIONEND = 'data-ontransitionend',
 		DATA_ONUNLOAD        = 'data-onunload',
 
-		DEFAULT_DELAY = 500,
+		DEFAULT_DELAY      = 500,
+		DEFAULT_TRANSITION = 'dissolve',
 
 		SELECTOR_SLIDES = '.slidekit > li',
 		CURRENT_SLIDE   = '.slidekit > li.current',
@@ -63,7 +64,8 @@
 
 	var
 		slides,
-		history
+		history,
+		isMidTrans
 	;
 
 	/**
@@ -82,7 +84,7 @@
 		}
 
 		for (idx = 0, len = items.length; idx < len; ++idx) {
-			func(items[idx]);
+			func(items[idx], idx);
 		}
 
 		return items;
@@ -229,13 +231,17 @@
 	 * @return void
 	 */
 	function addEventListeners() {
-		var i, len, delay;
+		var i, len, delay, trans;
 
 		// Watch for both events so we handle both simple transforms and keyframe animations
 		for (i = 0, len = slides.length; i < len; ++i) {
-			// Set up animation delays
+			// Set up animation delays / transitions
 			delay = slides[i].getAttribute(DATA_DELAY) || DEFAULT_DELAY;
+			trans = slides[i].getAttribute(DATA_TRANSITION) || DEFAULT_TRANSITION;
 			slides[i].style.webkitTransitionDuration = delay + "ms";
+			if (trans) {
+				addClass(slides[i], trans);
+			}
 
 			// Bind the events
 			slides[i].addEventListener(EVENT_WEBKITTRANSITIONEND, function (evt) {
@@ -249,6 +255,12 @@
 
 		// Listen for keys on the document
 		document.addEventListener('keyup', function (evt) {
+			// Ignore all keystrokes if we're mid-transition
+			// This feels inelegant -- need to think about it
+			if (isMidTrans) {
+				return true;
+			}
+
 			switch(evt.keyCode) {
 				case 37: // Left Arrow
 					prevSlide();
@@ -309,6 +321,7 @@
 	function transSlide(prevEl, nextEl) {
 		var prevDelay, nextDelay;
 
+
 		// Had to parseInt -- for some reason, the second *always* came back string
 		prevDelay = parseInt(prevEl.getAttribute(DATA_DELAY)) || DEFAULT_DELAY;
 		nextDelay = parseInt(nextEl.getAttribute(DATA_DELAY)) || DEFAULT_DELAY;
@@ -317,6 +330,7 @@
 		onUnload(prevEl);
 
 		// Transition: Start
+		isMidTrans = true;
 		addClass(prevEl, 'out');
 
 		// Transition: Midpoint
@@ -330,6 +344,7 @@
 		// Transition: End
 		setTimeout(function() {
 			removeClass(nextEl, 'in');
+			isMidTrans = false;
 		}, prevDelay + nextDelay);
 
 		// Run the next callback
@@ -378,6 +393,7 @@
 	function init() {
 		slides  = document.querySelectorAll(SELECTOR_SLIDES);
 		history = [];
+		isMidTrans = false;
 
 		addEventListeners();
 	}
