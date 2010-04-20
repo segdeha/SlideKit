@@ -51,11 +51,14 @@
 		DATA_ONTRANSITIONEND = 'data-ontransitionend',
 		DATA_ONUNLOAD        = 'data-onunload',
 
+		DEBUG = true,
+
 		DEFAULT_DELAY      = 500,
-		DEFAULT_TRANSITION = 'dissolve',
+		DEFAULT_TRANSITION = 'slide',
 
 		SELECTOR_SLIDES = '.slidekit > li',
-		CURRENT_SLIDE   = '.slidekit > li.current',
+		CURRENT_SLIDE   = SELECTOR_SLIDES + '.current',
+		NEXT_SLIDE      = SELECTOR_SLIDES + '.next',
 
 		HTML_FORM = 'FORM',
 
@@ -67,6 +70,25 @@
 		history,
 		isMidTrans
 	;
+
+	/**
+	 * A simple logging function for debugging purposes
+	 * @private
+	 * @param object  item    Item to be output in a log
+	 * @param method  string  The method on console to call (default is 'log')
+	 */
+	function dbg(item, method) {
+		// Do nothing if not in debug
+		if (!DEBUG) return;
+
+		if (UNDEF === typeof method) {
+			method = 'log';
+		}
+
+		if (console[method]) {
+			console[method](item);
+		}
+	}
 
 	/**
 	 * Apply a function to an item or collection of items
@@ -125,6 +147,7 @@
 				classes      = '' === el.className ? [] : el.className.split(' ');
 				classes.push(cls);
 				el.className = classes.join(' ');
+				dbg('Added class "' + cls + '" to ' + el.id);
 			}
 		}, els);
 	}
@@ -159,6 +182,7 @@
 				}
 
 				el.className = newClasses.join(' ');
+				dbg('Removed class "' + cls + '" from ' + el.id);
 			};
 		}
 
@@ -175,6 +199,8 @@
 	 */
 	function slideIdx(el) {
 		var i, len;
+
+		dbg("slideIdx called");
 
 		if (UNDEF === typeof el) {
 			el = document.querySelector(CURRENT_SLIDE);
@@ -197,6 +223,8 @@
 	 * @return void
 	 */
 	function onUnload(el) {
+		dbg("onUnload called");
+
 		doCallback(el, DATA_ONUNLOAD);
 	}
 
@@ -207,7 +235,37 @@
 	 * @return void
 	 */
 	function onTransitionEnd(el) {
-		doCallback(el, DATA_ONTRANSITIONEND);
+		var nextEl;
+		dbg("onTransitionEnd called on " + el.id);
+
+		//debugger;
+
+		// See what we are
+		if (hasClass(el, 'out')) {
+			// We're being transitioned away from:
+			dbg("Hiding transition ended");
+			// Clean up ourself
+			removeClass(el, 'current');
+			removeClass(el, 'out');
+			// Start up the next one
+			nextEl = document.querySelector(NEXT_SLIDE);
+			dbg('nextEl.id: ' + nextEl.id);
+			removeClass(nextEl, 'next')
+			addClass(nextEl, 'current');
+			addClass(nextEl, 'in');
+			//addClass(nextEl, 'current');
+		} else if (hasClass(el, 'in')) {
+			// We've been transitioned into:
+			dbg("Showing transition ended");
+			// Clean up ourself
+			removeClass(el, 'in');
+			// Kick off our inbound
+			doCallback(el, DATA_ONTRANSITIONEND);
+		} else {
+			throw "onTransitionEnd firing on unexpected slide";
+		}
+
+		dbg("onTransitionEnd over");
 	}
 
 	/**
@@ -251,6 +309,16 @@
 			slides[i].addEventListener(EVENT_WEBKITANIMATIONEND, function (evt) {
 				onTransitionEnd(this);
 			}, false);
+
+			if (DEBUG) {
+				slides[i].addEventListener(EVENT_WEBKITTRANSITIONEND, function (evt) {
+					dbg("WebkitTransEnd on " + this.id);
+				}, false);
+
+				slides[i].addEventListener(EVENT_WEBKITANIMATIONEND, function (evt) {
+					dbg("WebkitAnimEnd on " + this.id);
+				}, false);
+			}
 		}
 
 		// Listen for keys on the document
@@ -258,7 +326,7 @@
 			// Ignore all keystrokes if we're mid-transition
 			// This feels inelegant -- need to think about it
 			if (isMidTrans) {
-				return true;
+				//return true;
 			}
 
 			switch(evt.keyCode) {
@@ -275,11 +343,13 @@
 
 	/**
 	 * Go to the next slide in the document order
-	 * @private
+	 * @public
 	 * @return void
 	 */
 	function nextSlide() {
 		var idx;
+
+		dbg("nextSlide called");
 
 		// Get the index of the current slide and increment up
 		idx = slideIdx() + 1;
@@ -294,11 +364,13 @@
 
 	/**
 	 * Go to the previous slide in the document order
-	 * @private
+	 * @public
 	 * @return void
 	 */
 	function prevSlide() {
 		var idx;
+
+		dbg("prevSlide called");
 
 		// Get the index of the current slide and decrement
 		idx = slideIdx() - 1;
@@ -319,20 +391,31 @@
 	 * @return void
 	 */
 	function transSlide(prevEl, nextEl) {
-		var prevDelay, nextDelay;
+		//var prevDelay, nextDelay;
 
+		dbg("transSlide called");
+		if (prevEl.id !== "") {
+			dbg("prevEl ID: " + prevEl.id);
+		}
+		if (nextEl.id !== "") {
+			dbg("nextEl ID: " + nextEl.id);
+		}
 
 		// Had to parseInt -- for some reason, the second *always* came back string
-		prevDelay = parseInt(prevEl.getAttribute(DATA_DELAY)) || DEFAULT_DELAY;
-		nextDelay = parseInt(nextEl.getAttribute(DATA_DELAY)) || DEFAULT_DELAY;
+		/*
+		prevDelay = parseInt(prevEl.getAttribute(DATA_DELAY), 10) || DEFAULT_DELAY;
+		nextDelay = parseInt(nextEl.getAttribute(DATA_DELAY), 10) || DEFAULT_DELAY;
+		*/
 
-		// Run the prev callback
+		// Run the unload callback
 		onUnload(prevEl);
 
 		// Transition: Start
 		isMidTrans = true;
 		addClass(prevEl, 'out');
+		addClass(nextEl, 'next');
 
+		/*
 		// Transition: Midpoint
 		setTimeout(function() {
 			removeClass(prevEl, 'out');
@@ -349,6 +432,9 @@
 
 		// Run the next callback
 		onTransitionEnd(nextEl);
+		*/
+		// Now handled in the onTransitionEnd event
+		// Keeping here in a comment just for now
 	}
 
 	/**
@@ -359,6 +445,8 @@
 	 */
 	function gotoSlide(idx) {
 		var curEl, nextEl;
+
+		dbg("gotoSlide called with idx: " + idx);
 
 		curEl  = document.querySelector(CURRENT_SLIDE);
 		nextEl = slides[idx];
@@ -396,6 +484,10 @@
 		isMidTrans = false;
 
 		addEventListeners();
+
+		// Expose a couple of functions to the window
+		window.prevSlide = prevSlide;
+		window.nextSlide = nextSlide;
 	}
 
 	// Load it up!
