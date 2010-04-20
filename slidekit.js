@@ -299,12 +299,14 @@
 			slides[i].style.webkitTransitionDuration = delay + "ms";
 			if (trans) {
 				addClass(slides[i], trans);
+				/* WORK IN PROGRESS
 				switch(trans) {
 					case 'dissolve':
 						// Zero out the opacity
 						slides[i].style.opacity = 0;
 						break;
 				}
+				*/
 			}
 
 			// Bind the events
