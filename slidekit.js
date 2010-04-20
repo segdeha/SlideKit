@@ -54,7 +54,7 @@
 		DEBUG = true,
 
 		DEFAULT_DELAY      = 500,
-		DEFAULT_TRANSITION = 'slide',
+		DEFAULT_TRANSITION = 'dissolve',
 
 		SELECTOR_SLIDES = '.slidekit > li',
 		CURRENT_SLIDE   = SELECTOR_SLIDES + '.current',
@@ -299,6 +299,12 @@
 			slides[i].style.webkitTransitionDuration = delay + "ms";
 			if (trans) {
 				addClass(slides[i], trans);
+				switch(trans) {
+					case 'dissolve':
+						// Zero out the opacity
+						slides[i].style.opacity = 0;
+						break;
+				}
 			}
 
 			// Bind the events
