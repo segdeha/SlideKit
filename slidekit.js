@@ -54,11 +54,23 @@
 		DEBUG = true,
 
 		DEFAULT_DELAY      = 500,
-		DEFAULT_TRANSITION = 'dissolve',
+		DEFAULT_TRANSITION = 'slide',
 
 		SELECTOR_SLIDES = '.slidekit > li',
 		CURRENT_SLIDE   = SELECTOR_SLIDES + '.current',
 		NEXT_SLIDE      = SELECTOR_SLIDES + '.next',
+
+		TRANSITIONS = {
+			dissolve: {
+				sync: true
+			},
+			fade: {
+				sync: false
+			},
+			slide: {
+				sync: false
+			}
+		};
 
 		HTML_FORM = 'FORM',
 
@@ -68,7 +80,7 @@
 	var
 		slides,
 		history,
-		isMidTrans
+		isInSyncTrans
 	;
 
 	/**
@@ -238,32 +250,40 @@
 		var nextEl;
 		dbg("onTransitionEnd called on " + el.id);
 
-		//debugger;
-
-		// See what we are
-		if (hasClass(el, 'out')) {
-			// We're being transitioned away from:
-			dbg("Hiding transition ended");
-			// Clean up ourself
-			removeClass(el, 'current');
-			removeClass(el, 'out');
-			// Start up the next one
-			nextEl = document.querySelector(NEXT_SLIDE);
-			dbg('nextEl.id: ' + nextEl.id);
-			removeClass(nextEl, 'next')
-			addClass(nextEl, 'current');
-			addClass(nextEl, 'in');
-			//addClass(nextEl, 'current');
-		} else if (hasClass(el, 'in')) {
-			// We've been transitioned into:
-			dbg("Showing transition ended");
-			// Clean up ourself
-			removeClass(el, 'in');
-			// Kick off our inbound
-			doCallback(el, DATA_ONTRANSITIONEND);
+		if (!isInSyncTrans) {
+			// In an async transition
+			// See what we are
+			if (hasClass(el, 'out')) {
+				// We're being transitioned away from:
+				dbg("Async hiding transition ended");
+				// Clean up ourself
+				removeClass(el, 'current');
+				removeClass(el, 'out');
+				// Start up the next one
+				nextEl = document.querySelector(NEXT_SLIDE);
+				dbg('nextEl.id: ' + nextEl.id);
+				removeClass(nextEl, 'next')
+				addClass(nextEl, 'current');
+				addClass(nextEl, 'in');
+				//addClass(nextEl, 'current');
+			} else if (hasClass(el, 'in')) {
+				// We've been transitioned into:
+				dbg("Async showing transition ended");
+				// Clean up ourself
+				removeClass(el, 'in');
+				// Kick off our inbound
+				doCallback(el, DATA_ONTRANSITIONEND);
+			}
 		} else {
-			throw "onTransitionEnd firing on unexpected slide";
-		}
+			// We're in a synchronous transition
+			// So we only want to fire our callback
+			// if we're the current
+			if (hasClass(el, 'current')) {
+				doCallback(el, DATA_ONTRANSITIONEND);
+			}
+			// Drop our count of transitions to resolve regardless
+			isInSyncTrans--;
+		} // if (!isInSyncTrans)
 
 		dbg("onTransitionEnd over");
 	}
@@ -331,12 +351,6 @@
 
 		// Listen for keys on the document
 		document.addEventListener('keyup', function (evt) {
-			// Ignore all keystrokes if we're mid-transition
-			// This feels inelegant -- need to think about it
-			if (isMidTrans) {
-				//return true;
-			}
-
 			switch(evt.keyCode) {
 				case 37: // Left Arrow
 					prevSlide();
@@ -400,6 +414,7 @@
 	 */
 	function transSlide(prevEl, nextEl) {
 		//var prevDelay, nextDelay;
+		var prevTrans, nextTrans;
 
 		dbg("transSlide called");
 		if (prevEl.id !== "") {
@@ -409,40 +424,25 @@
 			dbg("nextEl ID: " + nextEl.id);
 		}
 
-		// Had to parseInt -- for some reason, the second *always* came back string
-		/*
-		prevDelay = parseInt(prevEl.getAttribute(DATA_DELAY), 10) || DEFAULT_DELAY;
-		nextDelay = parseInt(nextEl.getAttribute(DATA_DELAY), 10) || DEFAULT_DELAY;
-		*/
+		prevTrans = prevEl.getAttribute(DATA_TRANSITION) || DEFAULT_TRANSITION;
+		nextTrans = nextEl.getAttribute(DATA_TRANSITION) || DEFAULT_TRANSITION;
+
 
 		// Run the unload callback
 		onUnload(prevEl);
 
-		// Transition: Start
-		isMidTrans = true;
-		addClass(prevEl, 'out');
-		addClass(nextEl, 'next');
-
-		/*
-		// Transition: Midpoint
-		setTimeout(function() {
-			removeClass(prevEl, 'out');
+		// If both transitions are synchronous, 
+		// Just swap classes
+		if (TRANSITIONS[prevTrans].sync && TRANSITIONS[nextTrans].sync) {
+			isInSyncTrans = 2; // For two slides
 			removeClass(prevEl, 'current');
 			addClass(nextEl, 'current');
-			addClass(nextEl, 'in');
-		}, prevDelay);
-
-		// Transition: End
-		setTimeout(function() {
-			removeClass(nextEl, 'in');
-			isMidTrans = false;
-		}, prevDelay + nextDelay);
-
-		// Run the next callback
-		onTransitionEnd(nextEl);
-		*/
-		// Now handled in the onTransitionEnd event
-		// Keeping here in a comment just for now
+		} else {
+			// Set some classes to start transitioning
+			isInSyncTrans = 0; // None to synchronously change
+			addClass(prevEl, 'out');
+			addClass(nextEl, 'next');
+		}
 	}
 
 	/**
@@ -489,7 +489,7 @@
 	function init() {
 		slides  = document.querySelectorAll(SELECTOR_SLIDES);
 		history = [];
-		isMidTrans = false;
+		isInSyncTrans = 0;
 
 		addEventListeners();
 

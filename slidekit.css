@@ -60,18 +60,22 @@
 
 /* DEFAULT TRANSITIONS */
 
-.slidekit > li.dissolve {
+.slidekit > li.dissolve,
+.slidekit > li.fade {
 	-webkit-transition-property: opacity;
 	display: block;
 	opacity: 0;
 }
 
+.slidekit > li.dissolve.current,
 .slidekit > li.dissolve.in,
-.slidekit > li.dissolve.current {
+.slidekit > li.fade.current,
+.slidekit > li.fade.in {
 	opacity: 1;
 }
 
-.slidekit > li.dissolve.out {
+.slidekit > li.dissolve.out,
+.slidekit > li.fade.out {
 	opacity: 0;
 }
 
