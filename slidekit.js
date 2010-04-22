@@ -54,7 +54,7 @@
 		DEBUG = true,
 
 		DEFAULT_DELAY      = 500,
-		DEFAULT_TRANSITION = 'slide',
+		DEFAULT_TRANSITION = 'dissolve',
 
 		SELECTOR_SLIDES = '.slidekit > li',
 		CURRENT_SLIDE   = SELECTOR_SLIDES + '.current',
