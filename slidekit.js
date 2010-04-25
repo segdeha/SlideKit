@@ -29,7 +29,7 @@
  * Trim whitespace from the beginning and end of a string, from: http://snippets.dzone.com/posts/show/701
  */
 ''.trim || (String.prototype.trim = function () {
-	return this.replace(/^\s+|\s+$/, '');
+	return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 });
 
 // Keep our crap out of the global scope
