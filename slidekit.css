@@ -75,14 +75,14 @@
 /* section === slide */
 section {
     background: white;
+    bottom: 20px;
     color: black;
-    display: table;
-    height: 100%;
-    left: 0;
+    display: block;
+    left: 20px;
     padding: 100px;
     position: absolute;
-    top: 0;
-    width: 100%;
+    top: 20px;
+    right: 20px;
     -webkit-border-radius: 10px;
 }
 
@@ -94,16 +94,11 @@ section {
 }
 body {
     background: black;
-    bottom: 20px;
     color: white;
     font: 48px/1.5 helvetica, sans-serif;
-    left: 20px;
-    position: absolute;
-    right: 20px;
-    top: 20px;
 }
 article {
-    display: table-cell;
+    display: block;
     text-align: center;
     vertical-align: middle;
 }
