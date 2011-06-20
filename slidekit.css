@@ -79,6 +79,7 @@ section {
     color: black;
     display: block;
     left: 20px;
+    overflow: auto;
     padding: 100px;
     position: absolute;
     top: 20px;
