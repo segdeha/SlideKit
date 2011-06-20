@@ -1,108 +1,174 @@
-/*	SlideKit styles
-	Andrew Hedges, andrew@hedges.name
-	2010-04-14 16:46
+/*  SlideKit styles
+    Andrew Hedges, andrew@hedges.name
+    @created 2010-04-14 16:46
+    @updated 2011-06-20 10:10
 
-	Copyright (c) 2010 Andrew Hedges, http://github.com/segdeha/SlideKit
+    Copyright (c) 2010 Andrew Hedges, http://github.com/segdeha/SlideKit
 
-	Permission is hereby granted, free of charge, to any person obtaining
-	a copy of this software and associated documentation files (the
-	"Software"), to deal in the Software without restriction, including
-	without limitation the rights to use, copy, modify, merge, publish,
-	distribute, sublicense, and/or sell copies of the Software, and to
-	permit persons to whom the Software is furnished to do so, subject to
-	the following conditions:
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
 
-	The above copyright notice and this permission notice shall be
-	included in all copies or substantial portions of the Software.
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
 
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-	NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-	LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-	OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-	WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-.slidekit, .slidekit > li {
-	position: absolute;
-	margin: 0;
-	padding: 0;
+/* TRANSITIONS */
+/* put the classname for the transition style you want on the <body> tag */
+
+.fade section {
+    opacity: 1;
+    -webkit-transition: opacity 0.75s;
+}
+    .fade section.hidden {
+        opacity: 0;
+    }
+
+.rotate section {
+    opacity: 1;
+    -webkit-transform: rotate(0);
+    -webkit-transform-origin: left bottom;
+    -webkit-transition: all 0.75s;
+}
+    .rotate section.hidden {
+        opacity: 0;
+        -webkit-transform: rotate(-90deg);
+    }
+
+.scale section {
+    opacity 1;
+    -webkit-transform: scale(1);
+    -webkit-transition: all 0.75s;
+}
+    .scale section.hidden {
+        opacity: 0;
+        -webkit-transform: scale(2);
+    }
+
+.slide-down section {
+    -webkit-transition: -webkit-transform 0.75s ease-in;
+}
+    .slide-down section.hidden {
+        -webkit-transform: translate3d(0, 110%, 0);
+    }
+
+.slide-left section {
+    -webkit-transition: -webkit-transform 0.75s;
+}
+    .slide-left section.hidden {
+        -webkit-transform: translate3d(-110%, 0, 0);
+    }
+
+/* section === slide */
+section {
+    background: white;
+    color: black;
+    display: table;
+    height: 100%;
+    left: 0;
+    padding: 100px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    -webkit-border-radius: 10px;
 }
 
-.slidekit {
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	list-style: none;
-	font: 24px/1.5 Helvetica;
-	overflow: hidden;
+/* general styles */
+
+* {
+    margin: 0;
+    padding: 0;
 }
-
-.slidekit > li {
-	top: 2em;
-	right: 2em;
-	bottom: 2em;
-	left: 2em;
-	display: none;
+body {
+    background: black;
+    bottom: 20px;
+    color: white;
+    font: 48px/1.5 helvetica, sans-serif;
+    left: 20px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
 }
-
-.slidekit > li.current {
-	display: block;
+article {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
 }
-
-.slidekit > li.center {
-	text-align: center;
+aside {
+    color: #666;
+    font-size: 16px;
+    position: absolute;
 }
-
-
-/* DEFAULT TRANSITIONS */
-
-.slidekit > li.dissolve,
-.slidekit > li.fade {
-	-webkit-transition-property: opacity;
-	display: block;
-	opacity: 0;
+    /* slide header */
+    aside:first-child {
+        left: 20px;
+        top: 20px;
+    }
+    /* slide footer */
+    aside:last-child {
+        bottom: 20px;
+        right: 20px;
+        text-align: right;
+    }
+h1 {
+    font-size: 64px;
 }
-
-.slidekit > li.dissolve.current,
-.slidekit > li.dissolve.in,
-.slidekit > li.fade.current,
-.slidekit > li.fade.in {
-	opacity: 1;
+select {
+    background: #ccc -webkit-gradient(linear, left top, left bottom, from(#eee), to(#aaa));
+    display: inline-block;
+    font-size: 42px;
+    line-height: 1.5;
+    padding: 0 16px;
+    text-align: center;
+    text-shadow: rgba(255,255,255,0.75) 0 -1px 1px;
+    -webkit-appearance: none;
 }
-
-.slidekit > li.dissolve.out,
-.slidekit > li.fade.out {
-	opacity: 0;
+code, pre {
+    font: 42px/1.5 menlo, monospace;
 }
-
-.slidekit > li.slide {
-	-webkit-transition-property: margin;
-	margin-left: 200%;
+pre {
+    margin: 0 auto;
+    padding: 0 20px;
+    text-align: left;
 }
-
-.slidekit > li.slide.in,
-.slidekit > li.slide.current {
-	margin-left: 0px;
+ul {
+    list-style: none;
+    font-style: italic;
 }
-
-.slidekit > li.slide.out {
-	margin-left: -200%;
+table {
+    margin: 1em auto;
+    width: 80%;
 }
-
-/* DEFAULT THEMES */
-
-.slidekit[data-theme=black] {
-	background: black;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(black), to(#333));
-	color: white;
+th, td {
+    vertical-align: top;
+    width: 50%;
 }
-
-.slidekit[data-theme=black] a {
-	color: #ccf;
-	text-decoration: none;
+img {
+    max-height: 400px;
+    max-width: 600px;
 }
-
+a {
+    color: #666;
+    text-decoration: none;
+}
+    a:hover {
+        color: black;
+    }
+figure {
+    color: #666;
+    display: block;
+    font-size: 12px;
+}

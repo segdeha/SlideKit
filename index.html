@@ -1,48 +1,74 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>SlideKit</title>
-		<link rel="stylesheet" href="slidekit.css">
-	</head>
-	<body>
-		<ol class="slidekit" data-theme="black">
-			<li id="slide-001" class="current center" data-onunload="myUnload(1)">
-				<h1>Welcome to SlideKit</h1>
-				<p><a href="http://github.com/segdeha/SlideKit">github.com/segdeha/SlideKit</a></p>
-			</li>
-			<li id="slide-002" class="center" data-delay="200" data-onunload="myUnload(2)" data-ontransitionend="myTransEnd(2)" data-delay="500">
-				<h1>What is SlideKit?</h1>
-				<p>SlideKit is a framework for building presentations in HTML, CSS, and JavaScript. It leverages hardware-accelerated CSS animations to create smooth transitions between slides.</p>
-			</li>
-			<li id="slide-003" data-delay="1000">
-				<h1>A third slide</h1>
-				<p>Here for testing</p>
-				<p>Two paragraphs!</p>
-			</li>
-			<li id="slide-004" data-transition="fade">
-				<h1>Slide Four</h1>
-				<ul>
-					<li>Bullet 1</li>
-					<li>Bullet 2</li>
-					<li>Bullet 3</li>
-				</ul>
-			</li>
-			<li id="slide-005" data-transition="slide">
-				<h1>Fourth Slide!</h1>
-				<h2>I mean, fifth.</h2>
-			</li>
-		</ol>
-		<script src="slidekit.js"></script>
-		<script>
-			// A couple of test functions
-			function myUnload(i) {
-				console.log("myUnload: " + i);
-			}
-			function myTransEnd(i) {
-				console.log("myTransEnd: " + i);
-			}
+    <head>
+        <meta charset="utf-8">
+        <title>SlideKit</title>
+        <link rel="stylesheet" href="slidekit.css">
+    </head>
+    <body class="fade">
+        <!-- slide, the last -->
+        <section>
+            <article>
+                <p>SlideKit was originally conceived by <a href="http://twitter.com/segdeha">Andrew Hedges</a> and <a href="http://twitter.com/brianarn">Brian Arnold</a> with help from <a href="http://twitter.com/_jjphillips">Jayson Phillips</a>. The current version is based on Andrew's <a href="http://ahedg.es/txjs/2011/">TXJS Roundup</a>.</p>
+            </article>
+        </section>
 
-		</script>
-	</body>
+        <section>
+            <article>
+                <p>On the "to do" list:</p>
+                <ul>
+                    <li>Allowing authors to override the default transition type by putting a classname on the &lt;section> tag</li>
+                    <li>Enabling touch/swipe gestures</li>
+                </ul>
+                <p>Feel free to submit a pull request!</p>
+            </article>
+        </section>
+
+        <section>
+            <article>
+                <p>SlideKit is designed to work in Safari or Chrome (or any other browser based on WebKit). It is <strong>not</strong> an authoring tool. Basically, it's meant for people who know how to edit HTML.</p>
+            </article>
+        </section>
+
+        <section>
+            <aside>
+                This is a header
+            </aside>
+            <article>
+                <p>Slides are simple to implement.</p>
+    <pre>
+    &lt;section>
+        &lt;aside>&lt;-- header here -->&lt;/aside>
+        &lt;article>&lt;-- content here -->&lt;/article>
+        &lt;aside>&lt;-- footer here -->&lt;/aside>
+    &lt;/section>
+    </pre>
+            </article>
+            <aside>
+                This is a footer
+            </aside>
+        </section>
+
+        <!-- slide, the first -->
+        <section>
+            <article>
+                <h1>Welcome to SlideKit</h1>
+                <p style="font-size: 36px;">
+                    <strong>Right arrow</strong> advances through slides.<br>
+                    <strong>Left arrow</strong> goes back.
+                </p>
+                <p style="font-size: 36px;">
+                    Transition style:
+                    <select style="font-size: 36px;" onchange="document.body.className=this.options[this.selectedIndex].value">
+                        <option value="fade">Fade through</option>
+                        <option value="rotate">Rotate</option>
+                        <option value="scale">Scale out</option>
+                        <option value="slide-down">Slide down</option>
+                        <option value="slide-left">Slide left</option>
+                    </select>
+                </p>
+            </article>
+        </section>
+        <script src="slidekit.js"></script>
+    </body>
 </html>
