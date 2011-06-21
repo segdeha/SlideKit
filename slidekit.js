@@ -29,8 +29,24 @@
 (function () {
     var regex, slides, idx
 
+    regex  = /\bhidden\b/
+    slides = document.querySelectorAll('section')
+    idx    = slides.length - 1
+
     function isHidden(name) {
         return regex.test(name)
+    }
+
+    function hide(el) {
+        if (!isHidden(el.className)) {
+            el.className = el.className + ' hidden'
+        }
+    }
+
+    function show(el) {
+        if (isHidden(el.className)) {
+            el.className = el.className.replace('hidden', '')
+        }
     }
 
     function next() {
@@ -55,22 +71,6 @@
         }
         show(slides[idx])
     }
-
-    function hide(el) {
-        if (!isHidden(el.className)) {
-            el.className = el.className + ' hidden'
-        }
-    }
-
-    function show(el) {
-        if (isHidden(el.className)) {
-            el.className = el.className.replace('hidden', '')
-        }
-    }
-
-    regex  = /\bhidden\b/
-    slides = document.querySelectorAll('section')
-    idx    = slides.length - 1
 
     document.addEventListener('keyup', function (evt) {
         // left
