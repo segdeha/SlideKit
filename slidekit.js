@@ -27,32 +27,59 @@
 */
 
 (function () {
-    var slides, idx
+    var regex, slides, idx
+
+    function isHidden(name) {
+        return regex.test(name)
+    }
+
+    function next() {
+        hide(slides[idx])
+        idx -= 1
+        if (idx < 0) {
+            setTimeout(function () {
+                if (confirm('Start over?')) {
+                    location.reload()
+                }
+                else {
+                    idx = 0
+                }
+            }, 2000)
+        }
+    }
+
+    function prev() {
+        idx += 1
+        if (idx > slides.length - 1) {
+            idx = slides.length - 1
+        }
+        show(slides[idx])
+    }
+
+    function hide(el) {
+        if (!isHidden(el.className)) {
+            el.className = el.className + ' hidden'
+        }
+    }
+
+    function show(el) {
+        if (isHidden(el.className)) {
+            el.className = el.className.replace('hidden', '')
+        }
+    }
+
+    regex  = /\bhidden\b/
     slides = document.querySelectorAll('section')
     idx    = slides.length - 1
+
     document.addEventListener('keyup', function (evt) {
         // left
         if (37 === evt.keyCode) {
-            idx += 1
-            if (idx > slides.length - 1) {
-                idx = slides.length - 1
-            }
-            slides[idx].className = ''
+            prev()
         }
         // right
         else if (39 === evt.keyCode) {
-            slides[idx].className = 'hidden'
-            idx -= 1
-            if (idx < 0) {
-                setTimeout(function () {
-                    if (confirm('Start over?')) {
-                        location.reload()
-                    }
-                    else {
-                        idx = 0
-                    }
-                }, 2000)
-            }
+            next()
         }
     })
 })()

@@ -48,6 +48,19 @@
         -webkit-transform: rotate(-90deg);
     }
 
+/* rotate transition that overrides whatever is the base transition */
+/* TODO is this the best pattern for this or is there a more elegant way? */
+section.rotate {
+    opacity: 1 !important;
+    -webkit-transform: rotate(0) !important;
+    -webkit-transform-origin: left bottom !important;
+    -webkit-transition: all 0.75s !important;
+}
+    section.rotate.hidden {
+        opacity: 0 !important;
+        -webkit-transform: rotate(-90deg) !important;
+    }
+
 .scale section {
     opacity 1;
     -webkit-transform: scale(1);
