@@ -74,8 +74,8 @@
 
     if ('ontouchstart' in window) {
         document.addEventListener('touchstart', function (evt) {
-            x_start = evt.touches[0].pageX
-            y_start = evt.touches[0].pageY
+            x_start = x_last = evt.touches[0].pageX
+            y_start = y_last = evt.touches[0].pageY
         })
 
         document.addEventListener('touchmove', function (evt) {
