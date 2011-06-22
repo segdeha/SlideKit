@@ -27,7 +27,7 @@
 */
 
 (function () {
-    var regex, slides, idx
+    var regex, slides, idx, x_start, y_start, x_last, y_last
 
     regex  = /\bhidden\b/
     slides = document.querySelectorAll('section')
@@ -72,14 +72,46 @@
         show(slides[idx])
     }
 
-    document.addEventListener('keyup', function (evt) {
-        // left
-        if (37 === evt.keyCode) {
-            prev()
-        }
-        // right
-        else if (39 === evt.keyCode) {
-            next()
-        }
-    })
+    if ('ontouchstart' in window) {
+        document.addEventListener('touchstart', function (evt) {
+            x_start = evt.touches[0].pageX
+            y_start = evt.touches[0].pageY
+        })
+
+        document.addEventListener('touchmove', function (evt) {
+            evt.preventDefault()
+
+            x_last = evt.touches[0].pageX
+            y_last = evt.touches[0].pageY
+        })
+
+        document.addEventListener('touchend', function (evt) {
+            var x_diff, y_diff
+
+            x_diff = x_last - x_start
+            y_diff = y_last - y_start
+
+            if (Math.abs(x_diff) > Math.abs(y_diff)) {
+                if (x_diff > 30) {
+                    prev()
+                }
+                else if (x_diff < -30) {
+                    next()
+                }
+            }
+        })
+    }
+    // no touch events, fall back to keyboard navigation
+    else {
+        document.addEventListener('keyup', function (evt) {
+            // left
+            if (37 === evt.keyCode) {
+                prev()
+            }
+            // right
+            else if (39 === evt.keyCode) {
+                next()
+            }
+        })
+    }
 })()
