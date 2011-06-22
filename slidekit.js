@@ -1,7 +1,7 @@
 /*  SlideKit behaviors
     Andrew Hedges, andrew@hedges.name
     @created 2010-04-14 17:07
-    @updated 2011-06-20 10:10
+    @updated 2011-06-22 09:09
 
     Copyright (c) 2010 Andrew Hedges, http://github.com/segdeha/SlideKit
 
