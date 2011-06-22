@@ -48,19 +48,6 @@
         -webkit-transform: rotate(-90deg);
     }
 
-/* rotate transition that overrides whatever is the base transition */
-/* TODO is this the best pattern for this or is there a more elegant way? */
-section.rotate {
-    opacity: 1 !important;
-    -webkit-transform: rotate(0) !important;
-    -webkit-transform-origin: left bottom !important;
-    -webkit-transition: all 0.75s !important;
-}
-    section.rotate.hidden {
-        opacity: 0 !important;
-        -webkit-transform: rotate(-90deg) !important;
-    }
-
 .scale section {
     opacity 1;
     -webkit-transform: scale(1);
@@ -83,6 +70,51 @@ section.rotate {
 }
     .slide-left section.hidden {
         -webkit-transform: translate3d(-110%, 0, 0);
+    }
+
+/* transitions that override whatever is the base transition */
+/* TODO is this the best pattern for this or is there a more elegant way? */
+section.fade {
+    opacity: 1 !important;
+    -webkit-transition: opacity 0.75s !important;
+}
+    section.fade.hidden {
+        opacity: 0 !important;
+    }
+
+section.rotate {
+    opacity: 1 !important;
+    -webkit-transform: rotate(0) !important;
+    -webkit-transform-origin: left bottom !important;
+    -webkit-transition: all 0.75s !important;
+}
+    section.rotate.hidden {
+        opacity: 0 !important;
+        -webkit-transform: rotate(-90deg) !important;
+    }
+
+section.scale {
+    opacity 1 !important;
+    -webkit-transform: scale(1) !important;
+    -webkit-transition: all 0.75s !important;
+}
+    section.scale.hidden {
+        opacity: 0 !important;
+        -webkit-transform: scale(2) !important;
+    }
+
+section.slide-down {
+    -webkit-transition: -webkit-transform 0.75s ease-in !important;
+}
+    section.slide-down.hidden {
+        -webkit-transform: translate3d(0, 110%, 0) !important;
+    }
+
+section.slide-left {
+    -webkit-transition: -webkit-transform 0.75s !important;
+}
+    section.slide-left.hidden {
+        -webkit-transform: translate3d(-110%, 0, 0) !important;
     }
 
 /* section === slide */
@@ -153,8 +185,6 @@ code, pre {
     font: 42px/1.5 menlo, monospace;
 }
 pre {
-    margin: 0 auto;
-    padding: 0 20px;
     text-align: left;
 }
 ul {
