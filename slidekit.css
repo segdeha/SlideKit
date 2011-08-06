@@ -58,6 +58,16 @@
         -webkit-transform: scale(2);
     }
 
+.scale-in section {
+    opacity 1;
+    -webkit-transform: scale(1);
+    -webkit-transition: all 0.75s;
+}
+    .scale-in section.hidden {
+        opacity: 0;
+        -webkit-transform: scale(0);
+    }
+
 .slide-down section {
     -webkit-transition: -webkit-transform 0.75s ease-in;
 }
