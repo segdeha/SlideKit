@@ -104,6 +104,8 @@
     // no touch events, fall back to keyboard navigation
     else {
         document.addEventListener('keyup', function (evt) {
+            // prevent arrow keys from moving the document slightly in some cases
+            evt.preventDefault()
             // left
             if (37 === evt.keyCode) {
                 prev()
